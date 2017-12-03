@@ -1,6 +1,6 @@
-let express = require('express')
-let router = express.Router()
-let passport = require('passport')
+var express = require('express');
+var router = express.Router();
+var passport = require('passport');
 
 
 // Define routes.
