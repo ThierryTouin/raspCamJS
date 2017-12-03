@@ -1,0 +1,63 @@
+<% include ../partials/header %>
+
+<script type="text/javascript">
+  
+          //send to the server with person name and message
+          var socketCl = io();
+          socketCl.emit("clientMsg", navigator.userAgent );
+  
+          document.onreadystatechange = function () {
+              var state = document.readyState
+              if (state == 'complete') {
+                  var imageCount = 0;
+                  var socket = io();
+                  socket.on('image', function(message) {
+                      document.getElementById("image").src = 'data:image/jpg;base64,' + message;
+                      document.getElementById("caption").innerHTML = 'Image #' + ++imageCount;
+                  });
+              }
+          }
+
+          function startCam() {
+              console.log('startCam()');
+            socketCl.emit('startCam', 'startCam');
+          }
+          function stopCam() {
+            console.log('stopCam()');
+            socketCl.emit('stopCam', 'stopCam');
+          }
+
+</script>
+
+
+  <!-- First Container -->
+  <div class="container-fluid bg-1 text-center">
+    <h3 class="margin">Cam</h3>
+    <div id="container">
+      <img width="640" height="480" id="image">
+      <p id="caption">Image #0</p>
+  </div>
+  </div>
+  
+
+  <!-- Second Container -->
+  <div class="container-fluid-light bg-2 text-center">
+
+    <form name="form1" method="post" action="">
+        <input type="button" class="btn btn-default btn-lg" value="Start" onClick="startCam()">
+        <input type="button" class="btn btn-default btn-lg" value="Stop" onClick="stopCam()">
+    </form>
+            
+    <!--
+    <a href="#" class="btn btn-default btn-lg">Start</a>
+    <a href="#" class="btn btn-default btn-lg">Stop</a>
+    <a href="#" class="btn btn-default btn-lg">Take</a>
+    <a href="#" class="btn btn-default btn-lg">Send</a>
+    -->
+
+  </div>
+  
+
+
+
+<% include ../partials/footer %>
