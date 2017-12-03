@@ -2,20 +2,20 @@
 
 //require('daemon')();
 
-let express = require('express')
-let app = express()
-let bodyparser = require('body-parser')
-let session = require('express-session')
+var express = require('express');
+var app = express();
+var bodyparser = require('body-parser');
+var session = require('express-session');
 
 const errorLog = require('./util/logger').errorlog;
 const successlog = require('./util/logger').successlog;
 
 // Moteur de template
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
-let passport = require('passport')
-let Strategy = require('passport-local').Strategy
-let db = require('./db')
+var passport = require('passport');
+var Strategy = require('passport-local').Strategy;
+var db = require('./db');
 
 
 // Configure the local strategy for use by Passport.
