@@ -20,12 +20,17 @@
 
           function startCam() {
               console.log('startCam()');
-            socketCl.emit('startCam', 'startCam');
+              socketCl.emit('startCam', 'startCam');
           }
           function stopCam() {
-            console.log('stopCam()');
-            socketCl.emit('stopCam', 'stopCam');
+              console.log('stopCam()');
+              socketCl.emit('stopCam', 'stopCam');
           }
+
+          socketCl.on('serverMsg', function(serverMsg) {
+              document.getElementById("status").innerHTML = serverMsg.status;
+          });
+          
 
 </script>
 
@@ -36,7 +41,8 @@
     <div id="container">
       <img width="640" height="480" id="image">
       <p id="caption">Image #0</p>
-  </div>
+      <p id="status"></p>
+    </div>
   </div>
   
 

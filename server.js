@@ -1,6 +1,6 @@
 "use strict";
 
-//require('daemon')();
+require('daemon')();
 
 var express = require('express');
 var app = express();
@@ -112,11 +112,13 @@ io.on('connection', function(socket) {
       socket.on('startCam', function(socket) {    
         successlog.info(`startCam()`);
         startCam = 1;
+        io.emit('serverMsg', { status: "camera run" });
       });
       socket.on('stopCam', function(socket) {    
         successlog.info(`stopCam()`);
         startCam = 0;
-      });
+        io.emit('serverMsg', { status: "camera stop" });
+    });
     
   });
   
@@ -126,7 +128,7 @@ io.on('connection', function(socket) {
       console.log('listening on port 3000');
   
       setInterval(function () {
-          if (!busy && startCam==1) {
+          if (!busy && startCam==1 && numClients>0) {
               busy = true;
               campi.getImageAsStream({
                   width: 640,
