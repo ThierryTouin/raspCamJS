@@ -31,9 +31,9 @@
               document.getElementById("status").innerHTML = serverMsg.status;
               if (serverMsg.startCam==1) {
                 document.getElementById('startBT').style.display = 'none';
-                document.getElementById('stopBT').style.display = 'block';
+                document.getElementById('stopBT').style = 'display:block; margin:0 auto;';
               } else {
-                document.getElementById('startBT').style.display = 'block';
+                document.getElementById('startBT').style = 'display:block; margin:0 auto;';
                 document.getElementById('stopBT').style.display = 'none';
               }
           });
