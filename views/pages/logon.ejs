@@ -29,6 +29,13 @@
 
           socketCl.on('serverMsg', function(serverMsg) {
               document.getElementById("status").innerHTML = serverMsg.status;
+              if (serverMsg.startCam==1) {
+                document.getElementById('startBT').style.color = "red";
+                document.getElementById('stopBT').style.color = "green";
+              } else {
+                document.getElementById('startBT').style.color = "green";
+                document.getElementById('stopBT').style.color = "red";
+              }
           });
           
 
@@ -50,8 +57,8 @@
   <div class="container-fluid-light bg-2 text-center">
 
     <form name="form1" method="post" action="">
-        <input type="button" class="btn btn-default btn-lg" value="Start" onClick="startCam()">
-        <input type="button" class="btn btn-default btn-lg" value="Stop" onClick="stopCam()">
+        <input id="startBT" type="button" class="btn btn-default btn-lg" value="Start" onClick="startCam()">
+        <input id="stopBT" type="button" class="btn btn-default btn-lg" value="Stop" onClick="stopCam()">
     </form>
             
     <!--
