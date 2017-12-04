@@ -30,11 +30,11 @@
           socketCl.on('serverMsg', function(serverMsg) {
               document.getElementById("status").innerHTML = serverMsg.status;
               if (serverMsg.startCam==1) {
-                document.getElementById('startBT').style.color = "red";
-                document.getElementById('stopBT').style.color = "green";
+                document.getElementById('startBT').style.display = 'none';
+                document.getElementById('stopBT').style.display = 'block';
               } else {
-                document.getElementById('startBT').style.color = "green";
-                document.getElementById('stopBT').style.color = "red";
+                document.getElementById('startBT').style.display = 'block';
+                document.getElementById('stopBT').style.display = 'none';
               }
           });
           

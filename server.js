@@ -117,7 +117,7 @@ io.on('connection', function(socket) {
       socket.on('stopCam', function(socket) {    
         successlog.info(`stopCam()`);
         startCam = 0;
-        io.emit('serverMsg', { status: "camera run", startCam:startCam });
+        io.emit('serverMsg', { status: "camera stop", startCam:startCam });
     });
     
   });
