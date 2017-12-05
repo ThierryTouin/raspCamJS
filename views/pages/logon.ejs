@@ -10,12 +10,25 @@
               var state = document.readyState
               if (state == 'complete') {
                   var imageCount = 0;
-                  var socket = io();
-                  socket.on('image', function(message) {
-                      document.getElementById("image").src = 'data:image/jpg;base64,' + message;
-                      document.getElementById("caption").innerHTML = 'Image #' + ++imageCount;
+                  //var socket = io();
+                  socketCl.on('image', function(message) {
+                        document.getElementById("image").src = 'data:image/jpg;base64,' + message;
+                        document.getElementById("caption").innerHTML = 'Image #' + ++imageCount;
                   });
-              }
+
+                  socketCl.on('serverMsg', function(serverMsg) {
+                        document.getElementById("status").innerHTML = serverMsg.status;
+                        if (serverMsg.startCam==1) {
+                            document.getElementById('startBT').style.display = 'none';
+                            document.getElementById('stopBT').style = 'display:block; margin:0 auto;';
+                        } else {
+                            document.getElementById('startBT').style = 'display:block; margin:0 auto;';
+                            document.getElementById('stopBT').style.display = 'none';
+                        }
+                  });
+
+
+                }
           }
 
           function startCam() {
@@ -27,16 +40,6 @@
               socketCl.emit('stopCam', 'stopCam');
           }
 
-          socketCl.on('serverMsg', function(serverMsg) {
-              document.getElementById("status").innerHTML = serverMsg.status;
-              if (serverMsg.startCam==1) {
-                document.getElementById('startBT').style.display = 'none';
-                document.getElementById('stopBT').style = 'display:block; margin:0 auto;';
-              } else {
-                document.getElementById('startBT').style = 'display:block; margin:0 auto;';
-                document.getElementById('stopBT').style.display = 'none';
-              }
-          });
           
 
 </script>
