@@ -1,6 +1,6 @@
 "use strict";
 
-require('daemon')();
+//require('daemon')();
 
 var express = require('express');
 var app = express();
@@ -90,34 +90,31 @@ var campi = new Campi();
 var startCam = 0;
 
 io.on('connection', function(socket) {
-  
-      socket.on("clientMsg", function (data) {
-          successlog.info(`Client user agent : ${data}`);
-      });
-  
+    
       numClients++;
-      io.emit('stats', { numClients: numClients });
-  
+
+      socket.on("clientMsg", function (data) {
+        io.emit('serverMsg', { numClients: numClients, startCam:startCam });
+        successlog.info(`Client user agent : ${data}`);
+      });
+    
+
       successlog.info(`Connected clients: ${numClients}`);
-      //console.log('Connected clients:', numClients);
   
       socket.on('disconnect', function() {
-          numClients--;
-          io.emit('stats', { numClients: numClients });
-  
+          numClients--;  
           successlog.info(`Connected clients: ${numClients}`);
-          //console.log('Connected clients:', numClients);
       });
 
       socket.on('startCam', function(socket) {    
         successlog.info(`startCam()`);
         startCam = 1;
-        io.emit('serverMsg', { status: "camera run", startCam:startCam });
+        io.emit('serverMsg', { numClients: numClients, startCam:startCam });
       });
       socket.on('stopCam', function(socket) {    
         successlog.info(`stopCam()`);
         startCam = 0;
-        io.emit('serverMsg', { status: "camera stop", startCam:startCam });
+        io.emit('serverMsg', { numClients: numClients, startCam:startCam });
     });
     
   });
