@@ -47,3 +47,7 @@ p {font-size: 16px;}
     color: #1abc9c !important;
 }
 
+img {
+    background: url('loading.gif') no-repeat;
+  }
+

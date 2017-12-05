@@ -15,7 +15,7 @@ function(request, response){
 });
 
 router.post('/login', 
-passport.authenticate('local', { failureRedirect: 'login.ejs' }),
+passport.authenticate('local', { failureRedirect: 'login' }),
 function(request, response) {
     response.redirect('/');
 });

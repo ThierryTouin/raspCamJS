@@ -96,14 +96,13 @@ io.on('connection', function(socket) {
       socket.on("clientMsg", function (data) {
         io.emit('serverMsg', { numClients: numClients, startCam:startCam });
         successlog.info(`Client user agent : ${data}`);
+        successlog.info(`Connected clients: ${numClients}`);
       });
     
-
-      successlog.info(`Connected clients: ${numClients}`);
-  
       socket.on('disconnect', function() {
           numClients--;  
           successlog.info(`Connected clients: ${numClients}`);
+          io.emit('serverMsg', { numClients: numClients, startCam:startCam });
       });
 
       socket.on('startCam', function(socket) {    
@@ -111,6 +110,7 @@ io.on('connection', function(socket) {
         startCam = 1;
         io.emit('serverMsg', { numClients: numClients, startCam:startCam });
       });
+      
       socket.on('stopCam', function(socket) {    
         successlog.info(`stopCam()`);
         startCam = 0;
