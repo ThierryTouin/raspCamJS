@@ -1,9 +1,8 @@
 # raspCamJS
-========
-This simple [Node.js](http://nodejs.org/) project demonstrates how you can use the [Socket.IO library](http://http://socket.io/) to push images from the [Raspberry Pi Camera Module](http://www.raspberrypi.org/products/camera-module/) to clients.
+This simple [Node.js](http://nodejs.org/) project for Raspberry Camera [Socket.IO library](http://http://socket.io/) to push images from the [Raspberry Pi Camera Module](http://www.raspberrypi.org/products/camera-module/) to clients.
 
 ## Author
-  - Werner Vesterås <wvesteraas@gmail.com>
+  - Thierry Touin <thierrytouin.pro@gmail.com>
 
 ## Prerequisites
 To run this project, you need Node.js installed.  Installing it is very simple:
