@@ -79,77 +79,15 @@ app.use(passport.session());
 // Routes ======================================================================
 app.use('/', require('./routes'));
 
-// Camera
-var Campi = require('campi');
+// Camera ======================================================================
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var base64 = require('base64-stream');
-var numClients = 0;
-var campi = new Campi();
 
-var startCam = 0;
+var serverCam = require('./util/cam.js');
 
-io.on('connection', function(socket) {
-    
-      numClients++;
+serverCam.connection(io);
+  
+//http.listen(3000, serverCam.listenDebug(io));
+http.listen(3000, serverCam.listen(io));
 
-      socket.on("clientMsg", function (data) {
-        io.emit('serverMsg', { numClients: numClients, startCam:startCam });
-        successlog.info(`Client user agent : ${data}`);
-        successlog.info(`Connected clients: ${numClients}`);
-      });
-    
-      socket.on('disconnect', function() {
-          numClients--;  
-          successlog.info(`Connected clients: ${numClients}`);
-          io.emit('serverMsg', { numClients: numClients, startCam:startCam });
-      });
-
-      socket.on('startCam', function(socket) {    
-        successlog.info(`startCam()`);
-        startCam = 1;
-        io.emit('serverMsg', { numClients: numClients, startCam:startCam });
-      });
-      
-      socket.on('stopCam', function(socket) {    
-        successlog.info(`stopCam()`);
-        startCam = 0;
-        io.emit('serverMsg', { numClients: numClients, startCam:startCam });
-    });
-    
-  });
-  
-  
-  http.listen(3000, function () {
-      var busy = false;
-      console.log('listening on port 3000');
-  
-      setInterval(function () {
-          if (!busy && startCam==1 && numClients>0) {
-              busy = true;
-              campi.getImageAsStream({
-                  width: 640,
-                  height: 480,
-                  shutter: 200000,
-                  timeout: 1,
-                  nopreview: true
-              }, function (err, stream) {
-                  var message = '';
-  
-                  var base64Stream = stream.pipe(base64.encode());
-  
-                  base64Stream.on('data', function (buffer) {
-                      message += buffer.toString();
-                  });
-  
-                  base64Stream.on('end', function () {
-                      io.sockets.emit('image', message);
-                      busy = false;
-                  });
-              });
-          }
-      }, 100);
-  });
-
-//app.listen(3000);
 successlog.info(`Server started on port 3000`);

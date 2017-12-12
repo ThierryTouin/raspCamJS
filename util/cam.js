@@ -1,46 +1,105 @@
- /**
- * Start camera.
- */
-const winston = require('winston');
-const winstonRotator = require('winston-daily-rotate-file');
+var Campi = require('campi');
 
-const consoleConfig = [
-  new winston.transports.Console({
-    'colorize': true
-  })
-];
+var base64 = require('base64-stream');
 
-const createLogger = new winston.Logger({
-  'transports': consoleConfig
-});
+var numClients = 0;
+var campi = new Campi();
+var startCam = 0;
 
-var fs = require('fs');
-var dir = './logs';
-if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, 0744);
-}
+const errorLog = require('./logger').errorlog;
+const successlog = require('./logger').successlog;
 
-const successLogger = createLogger;
-successLogger.add(winstonRotator, {
-  'name': 'access-file',
-  'level': 'info',
-  'filename': './logs/access.log',
-  'json': false,
-  'datePattern': 'yyyy-MM-dd-',
-  'prepend': true
-});
 
-const errorLogger = createLogger;
-errorLogger.add(winstonRotator, {
-  'name': 'error-file',
-  'level': 'error',
-  'filename': './logs/error.log',
-  'json': false,
-  'datePattern': 'yyyy-MM-dd-',
-  'prepend': true
-});
+
+  function connection(io) {
+
+    successlog.info(`connection() start io=` + io);
+    
+    io.on('connection', function(socket) {
+      
+        numClients++;
+  
+        socket.on("clientMsg", function (data) {
+          io.emit('serverMsg', { numClients: numClients, startCam:startCam });
+          successlog.info(`Client user agent : ${data}`);
+          successlog.info(`Connected clients: ${numClients}`);
+        });
+      
+        socket.on('disconnect', function() {
+            numClients--;  
+            successlog.info(`Connected clients: ${numClients}`);
+            io.emit('serverMsg', { numClients: numClients, startCam:startCam });
+        });
+  
+        socket.on('startCam', function(socket) {    
+          successlog.info(`startCam()`);
+          startCam = 1;
+          io.emit('serverMsg', { numClients: numClients, startCam:startCam });
+        });
+        
+        socket.on('stopCam', function(socket) {    
+          successlog.info(`stopCam()`);
+          startCam = 0;
+          io.emit('serverMsg', { numClients: numClients, startCam:startCam });
+      });
+      
+    });
+  
+
+  };
+
+  function listen(io) {
+
+      successlog.info(`listen() start io=` + io);
+      var busy = false;
+      setInterval(function () {
+          if (!busy && startCam==1 && numClients>0) {
+              busy = true;
+              campi.getImageAsStream({
+                  width: 640,
+                  height: 480,
+                  shutter: 200000,
+                  timeout: 1,
+                  nopreview: true
+              }, function (err, stream) {
+                  var message = '';
+
+                  var base64Stream = stream.pipe(base64.encode());
+
+                  base64Stream.on('data', function (buffer) {
+                      message += buffer.toString();
+                  });
+
+                  base64Stream.on('end', function () {
+                      io.sockets.emit('image', message);
+                      busy = false;
+                  });
+              });
+          }
+      }, 100);
+    };
+
+    function listenDebug(io) {
+
+      successlog.info(`listenDebug() start io=` + io);
+      var busy = false;
+      setInterval(function () {
+        //successlog.info(`listenDebug() interval`);
+        if (!busy && startCam==1 && numClients>0) {
+            //busy = true;
+            successlog.info(`Take photo...`);
+        }
+      }, 1000);
+    
+
+    };
+
+  
+
+
 
 module.exports = {
-  'successlog': successLogger,
-  'errorlog': errorLogger
+  listenDebug : listenDebug,
+  listen : listen,
+  connection : connection
 };
