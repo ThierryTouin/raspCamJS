@@ -9,6 +9,11 @@ var startCam = 0;
 const errorLog = require('./logger').errorlog;
 const successlog = require('./logger').successlog;
 
+var fs = require('fs');
+var dir = './data';
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, 0744);
+}
 
 
   function connection(io) {
@@ -36,7 +41,27 @@ const successlog = require('./logger').successlog;
           startCam = 1;
           io.emit('serverMsg', { numClients: numClients, startCam:startCam });
         });
-        
+
+        socket.on('sendCam', function(socket) {    
+            successlog.info(`sendCam()`);
+
+            campi.getImageAsFile({
+                width: 640,
+                height: 480,
+                nopreview: true,
+                timeout: 1,
+                hflip: true,
+                vflip: true
+            }, './data/output'+Date.now()+'.jpg', function (err) {
+                if (err) {
+                    throw err;
+                }
+                successlog.info('Image captured');
+            });
+
+        });
+          
+
         socket.on('stopCam', function(socket) {    
           successlog.info(`stopCam()`);
           startCam = 0;

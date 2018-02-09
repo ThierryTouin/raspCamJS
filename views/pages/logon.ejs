@@ -20,10 +20,12 @@
                         if (serverMsg.startCam==1) {
                             document.getElementById("status").innerHTML = "Server run !";
                             document.getElementById('startBT').style.display = 'none';
+                            document.getElementById('sendBT').style.display = 'none';
                             document.getElementById('stopBT').style = 'display:block; margin:0 auto;';
                         } else {
                             document.getElementById("status").innerHTML = "Server stop !";
                             document.getElementById('startBT').style = 'display:block; margin:0 auto;';
+                            document.getElementById('sendBT').style = 'display:block; margin:0 auto;';
                             document.getElementById('stopBT').style.display = 'none';
                         }
 
@@ -38,6 +40,10 @@
           function startCam() {
               console.log('startCam()');
               socketCl.emit('startCam', 'startCam');
+          }
+          function sendCam() {
+              console.log('sendCam()');
+              socketCl.emit('sendCam', 'sendCam');
           }
           function stopCam() {
               console.log('stopCam()');
@@ -67,6 +73,7 @@
 
     <form name="form1" method="post" action="">
         <input id="startBT" type="button" class="btn btn-default btn-lg" value="Start" onClick="startCam()">
+        <input id="sendBT" type="button" class="btn btn-default btn-lg" value="Send" onClick="sendCam()">
         <input id="stopBT" type="button" class="btn btn-default btn-lg" value="Stop" onClick="stopCam()">
     </form>
             
