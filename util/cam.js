@@ -9,6 +9,8 @@ var startCam = 0;
 const errorLog = require('./logger').errorlog;
 const successlog = require('./logger').successlog;
 
+const mailService = require('./mail');
+
 var fs = require('fs');
 var dir = './data';
 if (!fs.existsSync(dir)) {
@@ -45,6 +47,8 @@ if (!fs.existsSync(dir)) {
         socket.on('sendCam', function(socket) {    
             successlog.info(`sendCam()`);
 
+            var fileName = './data/output'+Date.now()+'.jpg';
+
             campi.getImageAsFile({
                 width: 640,
                 height: 480,
@@ -52,12 +56,15 @@ if (!fs.existsSync(dir)) {
                 timeout: 1,
                 hflip: true,
                 vflip: true
-            }, './data/output'+Date.now()+'.jpg', function (err) {
+            }, fileName , function (err) {
                 if (err) {
                     throw err;
                 }
                 successlog.info('Image captured');
             });
+
+            mailService.sendPhoto(fileName);
+            
 
         });
           
@@ -113,9 +120,13 @@ if (!fs.existsSync(dir)) {
         if (!busy && startCam==1 && numClients>0) {
             //busy = true;
             successlog.info(`Take photo...`);
+
+            var fileName = './data/lapin.jpg';
+            mailService.sendPhoto(fileName);
         }
       }, 1000);
     
+      
 
     };
 
