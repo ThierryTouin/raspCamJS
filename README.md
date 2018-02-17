@@ -50,3 +50,7 @@ By default, you can use :
 | User2     |      jill |    birthday    |
 
 (You can change it, in the file **/db/user.js**)
+
+## Running in boot
+@reboot bash [full path]/raspCamJS/start.sh >/home/pi/logs/cronlog 2>&1
+
