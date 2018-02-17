@@ -87,7 +87,7 @@ var serverCam = require('./util/cam.js');
 
 serverCam.connection(io);
   
-//http.listen(3000, serverCam.listenDebug(io));
-http.listen(3000, serverCam.listen(io));
+http.listen(3000, serverCam.listenDebug(io));
+//http.listen(3000, serverCam.listen(io));
 
 successlog.info(`Server started on port 3000`);
