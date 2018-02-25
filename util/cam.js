@@ -4,6 +4,7 @@ var base64 = require('base64-stream');
 
 var numClients = 0;
 var campi = new Campi();
+var takePicture = require("./takePicture.js");
 var startCam = 0;
 
 const errorLog = require('./logger').errorlog;
@@ -53,6 +54,7 @@ if (!fs.existsSync(dir)) {
 
             var fileName = './data/output'+Date.now()+'.jpg';
 
+            /*
             campi.getImageAsFile({
                 width: 640,
                 height: 480,
@@ -70,7 +72,11 @@ if (!fs.existsSync(dir)) {
                 setTimeout(envoyerPhoto(fileName), 5000); 
             
             });
+            */
 
+            takePicture.takePicture(fileName);
+            // send photo
+            setTimeout(envoyerPhoto(fileName), 5000); 
 
         });
           
