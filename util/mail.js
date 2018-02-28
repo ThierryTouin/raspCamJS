@@ -17,44 +17,50 @@ var smtpTransport = mailer.createTransport("SMTP",{
 
 function sendPhoto(fileName) {
 
-  /*
-  var mail = {
-    from: "votreAdresseGmail",
-    to: "leMailDuDestinataire",
-    subject: "leSujetDuMail",
-    html: "leCorpsDeVotreMessageEnHTML"
-  }
-  */
-  
-  var mail = {
-    from: "thierrytouin@gmail.com",
-    to: "thierrytouin@gmail.com",
-    subject: "photo intru",
-    html: "photo intru"
-  }
+  return new Promise(function (resolve, reject) {
 
-  var mailPJ = {
-    from: "thierrytouin@gmail.com",
-    to: "thierrytouin@gmail.com",
-    subject: "photo intru",
-    html: "photo intru",
-    attachments: [
-      {
-        filePath: fileName
-      },
-    ]
-  }
-  
-  smtpTransport.sendMail(mailPJ, function(error, response){
-    if(error){
-      errorLog.info(`Erreur lors de l'envoie du mail : ${fileName}`);
-      errorLog.info(error);
+    /*
+    var mail = {
+      from: "votreAdresseGmail",
+      to: "leMailDuDestinataire",
+      subject: "leSujetDuMail",
+      html: "leCorpsDeVotreMessageEnHTML"
+    }
+    */
+    
+    var mail = {
+      from: "thierrytouin@gmail.com",
+      to: "thierrytouin@gmail.com",
+      subject: "photo intru",
+      html: "photo intru"
+    }
+
+    var mailPJ = {
+      from: "thierrytouin@gmail.com",
+      to: "thierrytouin@gmail.com",
+      subject: "photo intru",
+      html: "photo intru",
+      attachments: [
+        {
+          filePath: fileName
+        },
+      ]
+    }
+    
+    smtpTransport.sendMail(mailPJ, function(error, response){
+      if(error){
+        errorLog.info(`Erreur lors de l'envoie du mail : ${fileName}`);
+        errorLog.info(error);
+        reject('Erreur lors envoie du mail');
     }else{
-      successlog.info(`Mail envoyé avec succès! : ${fileName}`);
+        successlog.info(`Mail envoyé avec succès! : ${fileName}`);
+        resolve('Mail envoyé avec succès!');        
     }
     smtpTransport.close();
   });
-        
+
+});
+
   
 };
 

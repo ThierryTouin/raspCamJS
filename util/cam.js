@@ -18,10 +18,7 @@ if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, 0744);
 }
 
-  function envoyerPhoto(fic) {
-    successlog.info('envoyerPhoto()');  
-    mailService.sendPhoto(fic);
-  };
+
 
   function connection(io) {
 
@@ -75,8 +72,18 @@ if (!fs.existsSync(dir)) {
             */
 
             takePicture.takePicture(fileName);
-            // send photo
-            setTimeout(envoyerPhoto(fileName), 5000); 
+
+            // send photo            
+            mailService.sendPhoto(fileName).then(function (data) {
+                successlog.info(data);
+                takePicture.stopAll();
+            }).catch(function (err) {
+                errorLog.info(err);
+                takePicture.stopAll();
+            });
+
+
+            
 
         });
           
