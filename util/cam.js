@@ -71,16 +71,21 @@ if (!fs.existsSync(dir)) {
             });
             */
 
-            takePicture.takePicture(fileName);
-
-            // send photo            
-            mailService.sendPhoto(fileName).then(function (data) {
-                successlog.info(data);
-                takePicture.stopAll();
+            takePicture.takePictureQuick(fileName).then(function (data1) {
+                successlog.info(data1);
+                // send photo            
+                mailService.sendPhoto(fileName).then(function (data) {
+                    successlog.info(data);
+                    takePicture.stopAll();
+                }).catch(function (err) {
+                    errorLog.info(err);
+                    takePicture.stopAll();
+                });               
             }).catch(function (err) {
                 errorLog.info(err);
-                takePicture.stopAll();
             });
+
+
 
 
             

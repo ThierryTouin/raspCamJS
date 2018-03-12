@@ -9,9 +9,15 @@ var options = "-w 640 -h 480 -q 10 ";
 
 /* FUNCTIONS */
 function takePictureQuick(fileName) {
-	exec("raspistill --nopreview -w 640 -h 480 -q 10 -o " + fileName + " -t 9999999 -tl 1000 -th 0:0:0", function(error, stdout, stderr) {
-		logger.info("takePictureQuick:" + error);
-	});
+	return new Promise(function (resolve, reject) {
+		exec("raspistill --nopreview -w 640 -h 480 -q 10 -o " + fileName + " -tl 1000 -th 0:0:0", function(error, stdout, stderr) {
+		if(error) {
+				reject('Erreur de prise avec raspistill ' + error);
+			} else {
+				resolve('Photo prise avec succès !');    
+			}
+		});
+	})
 }
 exports.takePictureQuick = takePictureQuick;
 
