@@ -18,93 +18,74 @@ if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, 0744);
 }
 
+function sendPic() {
+
+  successlog.info(`sendPic()`);
+
+  var fileName = './data/output'+Date.now()+'.jpg';
+
+  takePicture.takePictureQuick(fileName).then(function (data1) {
+      successlog.info(data1);
+      // send photo
+      mailService.sendPhoto(fileName).then(function (data) {
+          successlog.info(data);
+          takePicture.stopAll();
+      }).catch(function (err) {
+          errorLog.info(err);
+          takePicture.stopAll();
+      });
+  }).catch(function (err) {
+      errorLog.info(err);
+  });
 
 
-  function connection(io) {
+};
+
+
+function connection(io) {
 
     successlog.info(`connection() start io=` + io);
-    
+
     io.on('connection', function(socket) {
-      
+
         numClients++;
-  
+
         socket.on("clientMsg", function (data) {
           io.emit('serverMsg', { numClients: numClients, startCam:startCam });
           successlog.info(`Client user agent : ${data}`);
           successlog.info(`Connected clients: ${numClients}`);
         });
-      
+
         socket.on('disconnect', function() {
-            numClients--;  
+            numClients--;
             successlog.info(`Connected clients: ${numClients}`);
             io.emit('serverMsg', { numClients: numClients, startCam:startCam });
         });
-  
-        socket.on('startCam', function(socket) {    
+
+        socket.on('startCam', function(socket) {
           successlog.info(`startCam()`);
           startCam = 1;
           io.emit('serverMsg', { numClients: numClients, startCam:startCam });
         });
 
-        socket.on('sendCam', function(socket) {    
-            successlog.info(`sendCam()`);
-
-            var fileName = './data/output'+Date.now()+'.jpg';
-
-            /*
-            campi.getImageAsFile({
-                width: 640,
-                height: 480,
-                nopreview: true,
-                timeout: 1,
-                hflip: true,
-                vflip: true
-            }, fileName , function (err) {
-                if (err) {
-                    throw err;
-                }
-                successlog.info('Image captured');
-
-                // send photo
-                setTimeout(envoyerPhoto(fileName), 5000); 
-            
-            });
-            */
-
-            takePicture.takePictureQuick(fileName).then(function (data1) {
-                successlog.info(data1);
-                // send photo            
-                mailService.sendPhoto(fileName).then(function (data) {
-                    successlog.info(data);
-                    takePicture.stopAll();
-                }).catch(function (err) {
-                    errorLog.info(err);
-                    takePicture.stopAll();
-                });               
-            }).catch(function (err) {
-                errorLog.info(err);
-            });
-
-
-
-
-            
-
+        socket.on('sendCam', function(socket) {
+            successlog.info(`sendCam() by UI`);
+            sendPic();
         });
-          
 
-        socket.on('stopCam', function(socket) {    
+
+        socket.on('stopCam', function(socket) {
           successlog.info(`stopCam()`);
           startCam = 0;
           io.emit('serverMsg', { numClients: numClients, startCam:startCam });
       });
-      
+
     });
-  
 
-  };
 
-  function listen(io) {
+};
+
+function listen(io) {
 
       successlog.info(`listen() start io=` + io);
       var busy = false;
@@ -133,9 +114,9 @@ if (!fs.existsSync(dir)) {
               });
           }
       }, 100);
-    };
+};
 
-    function listenDebug(io) {
+function listenDebug(io) {
 
       successlog.info(`listenDebug() start io=` + io);
       var busy = false;
@@ -149,17 +130,13 @@ if (!fs.existsSync(dir)) {
             mailService.sendPhoto(fileName);
         }
       }, 1000);
-    
-      
 
-    };
-
-  
-
+};
 
 
 module.exports = {
   listenDebug : listenDebug,
   listen : listen,
-  connection : connection
+  connection : connection,
+  sendPic : sendPic
 };
