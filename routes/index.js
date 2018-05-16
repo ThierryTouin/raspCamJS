@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
-var serverCam = require('./util/cam.js');
+var serverCam = require('../util/cam.js');
 
 // Define routes.
 router.get('/',
@@ -41,6 +41,7 @@ function(request, response){
 router.get('/api/sendpic',
 function(request, response){
     serverCam.sendPic();
+    response.render('login.ejs');
 });
 
 
